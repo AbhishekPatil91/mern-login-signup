@@ -1,26 +1,24 @@
 const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const serverless = require('serverless-http'); // ✅
-
 const Authrouter = require('./Routes/AuthRouter');
 const ProductRouter = require('./Routes/ProductRouter');
 
 require('dotenv').config();
 require('./Models/db');
-
-const app = express();
-
-app.use(bodyParser.json());
-app.use(cors());
+const PORT = process.env.PORT || 8080;
 
 app.get('/ping', (req, res) => {
     res.send('PONG');
-});
+})
 
+app.use(bodyParser.json());
+app.use(cors());
 app.use('/auth', Authrouter);
 app.use('/products', ProductRouter);
 
-// ❌ Do not use app.listen()
-// ✅ Instead, export the serverless-wrapped app
-module.exports = serverless(app);
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+})
